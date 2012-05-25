@@ -1,6 +1,6 @@
 {
     "name" :        "gmusicr-server",
-    "version" :     "0.0.6",
+    "version" :     "0.0.7",
     "description" : "Backend service for gmusicr",
     "author":       "Jan Kolkmeier <jankolkmeier@gmail.com>",
     "main":         "server.js",

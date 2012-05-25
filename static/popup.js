@@ -1,17 +1,20 @@
+var interval;
+
 function callAction(action, cb) {
   var xhr = new XMLHttpRequest();
   var location;
   if (localStorage.server !== undefined) {
-    console.log("woot");
     location  = localStorage.server;
     location += '/ctrl/'+localStorage.apikey;
   } else {
     while (window.location.hash.length < 2) {
       window.location.hash = '#'+window.prompt("Enter Player Secret to connect:", "");
     }
-    setInterval(refresh, 8000);
+    if (interval) clearInterval(interval);
+    interval = setInterval(refresh, 8000);
     location  = '/ctrl/'+window.location.hash.substring(1);
   }
+
   location += '/'+action;
   xhr.open("GET", location, true);
   xhr.onreadystatechange = function() {

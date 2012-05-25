@@ -1,8 +1,6 @@
 var server = require('http').createServer(handler);
 var io = require('socket.io').listen(server);
-var url = require('url');
 var router = new require('routes').Router();
-var util = require('util');
 
 io.set('log level', 1);
 
@@ -12,12 +10,9 @@ router.addRoute("/ctrl/:id/:type", function(req, res, params) {
     type: params.type
   };
   
-  callAction(action, function(err, data) {
+  callAction(action, function(data) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      err: err,
-      data: data
-    }));
+    res.end(JSON.stringify(data));
   });
 });
 
@@ -32,34 +27,26 @@ function handler(req, res) {
 }
 
 function callAction(a, cb) {
-  for (c in io.sockets.sockets) {
+  for (var c in io.sockets.sockets) {
     var client = io.sockets.sockets[c];
     //console.log("%s (%s)", a.id, client._id);
     if (client._id !== undefined && client._id === a.id) {
-      if (a.type === 'info') {
-          client.emit('info', a, function(err, data) {
-            cb(err, data);
-          });
-          return;
-      } else {
-        client.emit('action', a, function(err) {
-          if (cb) {
-            client.emit('info', a, function(err, data) {
-              cb(err, data);
-            });
-          }
-        });
-        return;
-      }
+      var timeout = setTimeout(function() {
+        cb({ err: "GMusicR timed out", data: null });
+      }, 3000);
+      client.emit('action', a, function(res) {
+        clearTimeout(timeout);
+        cb(res);
+      });
+      return;
     }
   }
-  cb(true);
+  cb({ err: "No running GMusicR found named "+a.id , data: null });
 }
 
-server.listen(process.env.port || 4321, '0.0.0.0');
+server.listen(process.env.PORT || process.env.port || 4321, '0.0.0.0');
 
 io.sockets.on('connection', function(client) {
-  client.on('action', callAction);
 
   client.on('register', function(data) {
     console.log('registered player: '+data.id);

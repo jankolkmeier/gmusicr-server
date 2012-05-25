@@ -2,7 +2,11 @@ var server = require('http').createServer(handler);
 var io = require('socket.io').listen(server);
 var router = new require('routes').Router();
 
+var sfs = require('./staticFileServer.js')();
+
 io.set('log level', 1);
+
+router.addRoute("/static/*", sfs);
 
 router.addRoute("/ctrl/:id/:type", function(req, res, params) {
   var action = {

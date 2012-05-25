@@ -1,0 +1,17 @@
+{
+    "name" :        "gmusicr-server",
+    "version" :     "0.0.1",
+    "description" : "Backend service for gmusicr",
+    "author":       "Jan Kolkmeier <jankolkmeier@gmail.com>",
+    "main":         "server.js",
+    "keywords":     [ "socket.io", "google music" ],
+    "homepage":     "https://github.com/jouz/gmusicr-server",
+    "dependencies": {
+      "socket.io": "0.9.6",
+      "routes": "0.1.1"
+    },
+    "repository": {
+      "type" : "git",
+      "url" :  "git://github.com/gmusicr-server.git"
+     }
+}

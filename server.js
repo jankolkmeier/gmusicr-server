@@ -50,6 +50,13 @@ function callAction(a, cb) {
 
 server.listen(process.env.PORT || process.env.port || 4321, '0.0.0.0');
 
+if (process.env.PORT) {
+  io.configure(function() {
+    io.set("transports", ["xhr-polling"]); 
+    io.set("polling duration", 10); 
+  });
+}
+
 io.sockets.on('connection', function(client) {
 
   client.on('register', function(data) {
